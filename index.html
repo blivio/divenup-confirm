@@ -3,7 +3,7 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>DivenUp — Confirmação de e-mail</title>
+  <title>DivenUp</title>
   <meta name="robots" content="noindex">
   <style>
     :root {
@@ -76,29 +76,62 @@
       font-size: 15px;
       padding: 13px 26px;
       border-radius: 12px;
+      border: 0;
+      cursor: pointer;
+      width: 100%;
     }
     .btn:active { filter: brightness(.94); }
+    .btn[disabled] { opacity: .6; cursor: default; }
     .divider { height: 1px; background: var(--border); margin: 28px 0; }
     .en p { color: var(--faint); }
     .foot { margin-top: 22px; font-size: 12px; color: var(--faint); }
     [hidden] { display: none !important; }
+    form { text-align: left; margin-top: 22px; }
+    label {
+      display: block;
+      font-size: 13px;
+      font-weight: 600;
+      color: var(--text);
+      margin: 0 0 6px;
+    }
+    input {
+      width: 100%;
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      padding: 13px 14px;
+      font-size: 16px;
+      color: var(--text);
+      background: #fff;
+      margin-bottom: 16px;
+      outline: none;
+    }
+    input:focus { border-color: var(--primary); }
+    .error {
+      color: var(--danger);
+      background: var(--danger-soft);
+      border-radius: 10px;
+      padding: 10px 12px;
+      font-size: 13px;
+      margin: 0 0 14px;
+      text-align: left;
+    }
   </style>
 </head>
 <body>
   <main class="card">
     <div class="brand">DivenUp</div>
 
-    <!-- ============ SUCESSO ============ -->
-    <section id="state-ok">
+    <!-- ============ CONFIRMACAO DE E-MAIL: SUCESSO ============ -->
+    <section id="state-ok" hidden>
       <div class="icon ok">
         <svg width="36" height="36" viewBox="0 0 24 24" fill="none" stroke="#16A34A"
              stroke-width="3" stroke-linecap="round" stroke-linejoin="round">
           <polyline points="20 6 9 17 4 12"></polyline>
         </svg>
       </div>
-      <h1>E-mail confirmado!</h1>
-      <p>Sua conta na DivenUp está pronta. Abra o app e faça login para começar.</p>
-      <a class="btn" href="divenup://">Abrir o app DivenUp</a>
+      <h1 data-i18n="signupOkTitle">E-mail confirmado!</h1>
+      <p data-i18n="signupOkText">Sua conta na DivenUp está pronta. Abra o app e faça login para começar.</p>
+      <a class="btn" href="divenup://" data-i18n="openApp">Abrir o app DivenUp</a>
 
       <div class="divider"></div>
 
@@ -107,10 +140,51 @@
         <p>Your DivenUp account is ready. Open the app and sign in to get started.</p>
       </div>
 
-      <p class="foot">
-        Se o botão não abrir o app, abra o DivenUp manualmente.<br>
-        If the button doesn't open the app, open DivenUp manually.
+      <p class="foot" data-i18n="signupFoot">
+        Se o botão não abrir o app, abra o DivenUp manualmente.
       </p>
+    </section>
+
+    <!-- ============ NOVA SENHA ============ -->
+    <section id="state-reset" hidden>
+      <h1 data-i18n="resetTitle">Criar nova senha</h1>
+      <p data-i18n="resetText">Escolha uma nova senha para sua conta DivenUp.</p>
+
+      <p id="reset-error" class="error" hidden></p>
+
+      <form id="reset-form">
+        <label for="password" data-i18n="newPassword">Nova senha</label>
+        <input id="password" type="password" minlength="6" autocomplete="new-password" required>
+
+        <label for="password2" data-i18n="confirmPassword">Confirmar nova senha</label>
+        <input id="password2" type="password" minlength="6" autocomplete="new-password" required>
+
+        <button id="reset-submit" class="btn" type="submit" data-i18n="savePassword">Salvar nova senha</button>
+      </form>
+
+      <p class="foot" data-i18n="resetFoot">
+        A senha deve ter pelo menos 6 caracteres.
+      </p>
+    </section>
+
+    <!-- ============ NOVA SENHA: SUCESSO ============ -->
+    <section id="state-reset-ok" hidden>
+      <div class="icon ok">
+        <svg width="36" height="36" viewBox="0 0 24 24" fill="none" stroke="#16A34A"
+             stroke-width="3" stroke-linecap="round" stroke-linejoin="round">
+          <polyline points="20 6 9 17 4 12"></polyline>
+        </svg>
+      </div>
+      <h1 data-i18n="resetOkTitle">Senha alterada!</h1>
+      <p data-i18n="resetOkText">Sua nova senha já está valendo. Abra o app e entre com ela.</p>
+      <a class="btn" href="divenup://" data-i18n="openApp">Abrir o app DivenUp</a>
+
+      <div class="divider"></div>
+
+      <div class="en">
+        <h2>Password changed!</h2>
+        <p>Your new password is active. Open the app and sign in with it.</p>
+      </div>
     </section>
 
     <!-- ============ ERRO ============ -->
@@ -122,42 +196,216 @@
           <line x1="6" y1="6" x2="18" y2="18"></line>
         </svg>
       </div>
-      <h1>Não foi possível confirmar</h1>
-      <p>O link pode ter expirado ou já ter sido usado. Abra o app e solicite um novo e-mail de confirmação.</p>
+      <h1 id="error-title" data-i18n="errorTitle">Não foi possível continuar</h1>
+      <p id="error-text" data-i18n="errorText">O link pode ter expirado ou já ter sido usado. Abra o app e solicite um novo e-mail.</p>
       <p id="error-detail" class="foot"></p>
-
-      <div class="divider"></div>
-
-      <div class="en">
-        <h2>We couldn't confirm your email</h2>
-        <p>The link may have expired or already been used. Open the app and request a new confirmation email.</p>
-      </div>
+      <a class="btn" href="divenup://" data-i18n="openApp">Abrir o app DivenUp</a>
     </section>
   </main>
 
   <script>
-    // O Supabase redireciona para esta pagina. Em caso de falha, ele adiciona
-    // parametros de erro na URL (?error=... ou #error=...). Mostramos o estado
-    // de erro quando eles existem; caso contrario, sucesso.
     (function () {
-      try {
-        var query = new URLSearchParams(window.location.search);
-        var hash = new URLSearchParams(window.location.hash.replace(/^#/, ''));
-        var error = query.get('error') || hash.get('error') ||
-                    query.get('error_code') || hash.get('error_code');
-        if (!error) return;
+      var query = new URLSearchParams(window.location.search);
+      var hash = new URLSearchParams(window.location.hash.replace(/^#/, ''));
+      var flow = query.get('flow') || '';
+      var env = query.get('env') || 'prod';
+      var isReset = flow === 'reset' || hash.get('type') === 'recovery';
 
-        document.getElementById('state-ok').hidden = true;
-        document.getElementById('state-error').hidden = false;
+      var dict = {
+        pt: {
+          signupOkTitle: 'E-mail confirmado!',
+          signupOkText: 'Sua conta na DivenUp está pronta. Abra o app e faça login para começar.',
+          openApp: 'Abrir o app DivenUp',
+          signupFoot: 'Se o botão não abrir o app, abra o DivenUp manualmente.',
+          resetTitle: 'Criar nova senha',
+          resetText: 'Escolha uma nova senha para sua conta DivenUp.',
+          newPassword: 'Nova senha',
+          confirmPassword: 'Confirmar nova senha',
+          savePassword: 'Salvar nova senha',
+          resetFoot: 'A senha deve ter pelo menos 6 caracteres.',
+          resetOkTitle: 'Senha alterada!',
+          resetOkText: 'Sua nova senha já está valendo. Abra o app e entre com ela.',
+          errorTitle: 'Não foi possível continuar',
+          errorText: 'O link pode ter expirado ou já ter sido usado. Abra o app e solicite um novo e-mail.',
+          missingSession: 'Link inválido ou expirado. Solicite uma nova recuperação no app.',
+          shortPassword: 'A senha deve ter pelo menos 6 caracteres.',
+          mismatch: 'As duas senhas não são iguais.',
+          genericError: 'Não foi possível alterar a senha. Tente novamente.',
+        },
+        en: {
+          signupOkTitle: 'Email confirmed!',
+          signupOkText: 'Your DivenUp account is ready. Open the app and sign in to get started.',
+          openApp: 'Open the DivenUp app',
+          signupFoot: "If the button doesn't open the app, open DivenUp manually.",
+          resetTitle: 'Create a new password',
+          resetText: 'Choose a new password for your DivenUp account.',
+          newPassword: 'New password',
+          confirmPassword: 'Confirm new password',
+          savePassword: 'Save new password',
+          resetFoot: 'The password must be at least 6 characters.',
+          resetOkTitle: 'Password changed!',
+          resetOkText: 'Your new password is active. Open the app and sign in with it.',
+          errorTitle: "We couldn't continue",
+          errorText: 'The link may have expired or already been used. Open the app and request a new email.',
+          missingSession: 'Invalid or expired link. Request a new recovery email in the app.',
+          shortPassword: 'The password must be at least 6 characters.',
+          mismatch: 'The passwords do not match.',
+          genericError: "We couldn't change the password. Please try again.",
+        },
+      };
 
-        var desc = query.get('error_description') || hash.get('error_description');
-        if (desc) {
-          document.getElementById('error-detail').textContent =
-            decodeURIComponent(desc.replace(/\+/g, ' '));
-        }
-      } catch (e) {
-        // Se algo falhar no parse, mantemos a tela de sucesso.
+      var lang = (navigator.language || 'en').toLowerCase().indexOf('pt') === 0 ? 'pt' : 'en';
+      var t = dict[lang];
+      document.documentElement.lang = lang === 'pt' ? 'pt-BR' : 'en';
+
+      if (lang === 'en') {
+        document.querySelectorAll('.en').forEach(function (el) { el.hidden = true; });
       }
+
+      document.querySelectorAll('[data-i18n]').forEach(function (el) {
+        var key = el.getAttribute('data-i18n');
+        if (t[key]) el.textContent = t[key];
+      });
+
+      function show(id) {
+        ['state-ok', 'state-reset', 'state-reset-ok', 'state-error'].forEach(function (item) {
+          document.getElementById(item).hidden = item !== id;
+        });
+      }
+
+      function showError(message, detail) {
+        show('state-error');
+        document.getElementById('error-title').textContent = t.errorTitle;
+        document.getElementById('error-text').textContent = message || t.errorText;
+        if (detail) document.getElementById('error-detail').textContent = detail;
+      }
+
+      // Erros devolvidos pelo Supabase na URL.
+      var urlError = query.get('error') || hash.get('error') ||
+                     query.get('error_code') || hash.get('error_code');
+      var urlErrorDesc = query.get('error_description') || hash.get('error_description');
+
+      if (!isReset) {
+        if (urlError) showError(t.errorText, urlErrorDesc);
+        else show('state-ok');
+        return;
+      }
+
+      show('state-reset');
+
+      var config = env === 'dev'
+        ? {
+            url: 'https://fixvkvlpawizbylzdqak.supabase.co',
+            key: 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImZpeHZrdmxwYXdpemJ5bHpkcWFrIiwicm9sZSI6ImFub24iLCJpYXQiOjE3OTIwNjE4MjMsImV4cCI6MjEwNzYzNzgyM30.xv3tygFxyiuugUGqlQ9fWpJOP5_JBz6qdIMiz6_TUuw',
+          }
+        : {
+            url: 'https://vlyppjcufjicfjeiybak.supabase.co',
+            key: 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InZseXBwamN1ZmppY2ZqZWl5YmFrIiwicm9sZSI6ImFub24iLCJpYXQiOjE3OTE3NjEyNjUsImV4cCI6MjEwNzMzNzI2NX0.-45Pzwih1b3iPhcFtdzHGK50_6ev0viFFn3q3dLMIa8',
+          };
+
+      if (urlError) {
+        showError(t.missingSession, urlErrorDesc);
+        return;
+      }
+
+      var client;
+
+      function boot() {
+        if (!window.supabase) {
+          showError(t.genericError, 'Failed to load Supabase.');
+          return;
+        }
+
+        client = window.supabase.createClient(config.url, config.key, {
+          auth: {
+            detectSessionInUrl: false,
+            persistSession: false,
+            autoRefreshToken: false,
+          },
+        });
+
+        var code = query.get('code');
+        var accessToken = hash.get('access_token');
+        var refreshToken = hash.get('refresh_token');
+
+        if (code) {
+          client.auth.exchangeCodeForSession(code).then(function (result) {
+            if (result.error) showError(t.missingSession, result.error.message);
+          });
+          return;
+        }
+
+        if (!accessToken || !refreshToken) {
+          showError(t.missingSession);
+          return;
+        }
+
+        client.auth.setSession({
+          access_token: accessToken,
+          refresh_token: refreshToken,
+        }).then(function (result) {
+          if (result.error) showError(t.missingSession, result.error.message);
+        });
+      }
+
+      var form = document.getElementById('reset-form');
+      var errorBox = document.getElementById('reset-error');
+      var submit = document.getElementById('reset-submit');
+
+      form.addEventListener('submit', async function (event) {
+        event.preventDefault();
+
+        var password = document.getElementById('password').value;
+        var password2 = document.getElementById('password2').value;
+
+        errorBox.hidden = true;
+
+        if (password.length < 6) {
+          errorBox.textContent = t.shortPassword;
+          errorBox.hidden = false;
+          return;
+        }
+
+        if (password !== password2) {
+          errorBox.textContent = t.mismatch;
+          errorBox.hidden = false;
+          return;
+        }
+
+        if (!client) {
+          errorBox.textContent = t.missingSession;
+          errorBox.hidden = false;
+          return;
+        }
+
+        submit.disabled = true;
+
+        try {
+          var result = await client.auth.updateUser({ password: password });
+
+          if (result.error) {
+            errorBox.textContent = result.error.message || t.genericError;
+            errorBox.hidden = false;
+            return;
+          }
+
+          await client.auth.signOut();
+          show('state-reset-ok');
+        } catch (error) {
+          errorBox.textContent = t.genericError;
+          errorBox.hidden = false;
+        } finally {
+          submit.disabled = false;
+        }
+      });
+
+      var script = document.createElement('script');
+      script.src = 'https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2';
+      script.onload = boot;
+      script.onerror = function () {
+        showError(t.genericError, 'Failed to load Supabase.');
+      };
+      document.head.appendChild(script);
     })();
   </script>
 </body>

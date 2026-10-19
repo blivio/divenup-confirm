@@ -1,0 +1,162 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>DivenUp — Confirmação de e-mail</title>
+  <meta name="robots" content="noindex">
+  <style>
+    :root {
+      --primary: #2563EB;
+      --primary-dark: #1D4ED8;
+      --success: #16A34A;
+      --success-soft: #DCFCE7;
+      --danger: #DC2626;
+      --danger-soft: #FEE2E2;
+      --bg: #F3F5F9;
+      --surface: #FFFFFF;
+      --border: #E4E9F2;
+      --text: #0F172A;
+      --muted: #64748B;
+      --faint: #94A3B8;
+    }
+    * { box-sizing: border-box; }
+    body {
+      margin: 0;
+      min-height: 100vh;
+      background: var(--bg);
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+      color: var(--text);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 24px;
+    }
+    .card {
+      background: var(--surface);
+      width: 100%;
+      max-width: 440px;
+      border: 1px solid var(--border);
+      border-radius: 18px;
+      padding: 36px 28px;
+      box-shadow: 0 6px 24px rgba(15, 23, 42, .06);
+      text-align: center;
+    }
+    .brand {
+      font-weight: 800;
+      letter-spacing: -.02em;
+      font-size: 20px;
+      color: var(--primary);
+      margin-bottom: 28px;
+    }
+    .icon {
+      width: 76px;
+      height: 76px;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin: 0 auto 22px;
+    }
+    .icon.ok { background: var(--success-soft); }
+    .icon.err { background: var(--danger-soft); }
+    svg { display: block; }
+    h1 { font-size: 22px; margin: 0 0 10px; }
+    h2 { font-size: 16px; color: var(--muted); margin: 0 0 6px; font-weight: 700; }
+    p { color: var(--muted); font-size: 15px; line-height: 1.55; margin: 0 0 10px; }
+    .btn {
+      display: inline-block;
+      margin-top: 20px;
+      background: var(--primary);
+      color: #ffffff;
+      text-decoration: none;
+      font-weight: 600;
+      font-size: 15px;
+      padding: 13px 26px;
+      border-radius: 12px;
+    }
+    .btn:active { background: var(--primary-dark); }
+    .divider { height: 1px; background: var(--border); margin: 28px 0; }
+    .en p { color: var(--faint); }
+    .foot { margin-top: 22px; font-size: 12px; color: var(--faint); }
+    [hidden] { display: none !important; }
+  </style>
+</head>
+<body>
+  <main class="card">
+    <div class="brand">DivenUp</div>
+
+    <!-- ============ SUCESSO ============ -->
+    <section id="state-ok">
+      <div class="icon ok">
+        <svg width="36" height="36" viewBox="0 0 24 24" fill="none" stroke="#16A34A"
+             stroke-width="3" stroke-linecap="round" stroke-linejoin="round">
+          <polyline points="20 6 9 17 4 12"></polyline>
+        </svg>
+      </div>
+      <h1>E-mail confirmado!</h1>
+      <p>Sua conta na DivenUp está pronta. Abra o app e faça login para começar.</p>
+      <a class="btn" href="divenup://">Abrir o app DivenUp</a>
+
+      <div class="divider"></div>
+
+      <div class="en">
+        <h2>Email confirmed!</h2>
+        <p>Your DivenUp account is ready. Open the app and sign in to get started.</p>
+      </div>
+
+      <p class="foot">
+        Se o botão não abrir o app, abra o DivenUp manualmente.<br>
+        If the button doesn't open the app, open DivenUp manually.
+      </p>
+    </section>
+
+    <!-- ============ ERRO ============ -->
+    <section id="state-error" hidden>
+      <div class="icon err">
+        <svg width="36" height="36" viewBox="0 0 24 24" fill="none" stroke="#DC2626"
+             stroke-width="3" stroke-linecap="round" stroke-linejoin="round">
+          <line x1="18" y1="6" x2="6" y2="18"></line>
+          <line x1="6" y1="6" x2="18" y2="18"></line>
+        </svg>
+      </div>
+      <h1>Não foi possível confirmar</h1>
+      <p>O link pode ter expirado ou já ter sido usado. Abra o app e solicite um novo e-mail de confirmação.</p>
+      <p id="error-detail" class="foot"></p>
+
+      <div class="divider"></div>
+
+      <div class="en">
+        <h2>We couldn't confirm your email</h2>
+        <p>The link may have expired or already been used. Open the app and request a new confirmation email.</p>
+      </div>
+    </section>
+  </main>
+
+  <script>
+    // O Supabase redireciona para esta pagina. Em caso de falha, ele adiciona
+    // parametros de erro na URL (?error=... ou #error=...). Mostramos o estado
+    // de erro quando eles existem; caso contrario, sucesso.
+    (function () {
+      try {
+        var query = new URLSearchParams(window.location.search);
+        var hash = new URLSearchParams(window.location.hash.replace(/^#/, ''));
+        var error = query.get('error') || hash.get('error') ||
+                    query.get('error_code') || hash.get('error_code');
+        if (!error) return;
+
+        document.getElementById('state-ok').hidden = true;
+        document.getElementById('state-error').hidden = false;
+
+        var desc = query.get('error_description') || hash.get('error_description');
+        if (desc) {
+          document.getElementById('error-detail').textContent =
+            decodeURIComponent(desc.replace(/\+/g, ' '));
+        }
+      } catch (e) {
+        // Se algo falhar no parse, mantemos a tela de sucesso.
+      }
+    })();
+  </script>
+</body>
+</html>
